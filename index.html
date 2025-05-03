@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PAYMENT VINZARA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --primary-color: #2196f3;
+      --card-bg: #1e1e1e;
+    }
+    body.light-mode {
+      --bg-color: #f5f5f5;
+      --text-color: #000000;
+      --card-bg: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .toggle-mode, .toggle-music {
+      position: fixed;
+      top: 15px;
+      z-index: 1000;
+      background-color: var(--primary-color);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+    }
+    .toggle-mode { right: 15px; }
+    .toggle-music { left: 15px; }
+    .popup, .loading-container {
+      display: none;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: rgba(18,18,18,0.95);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+      z-index: 999;
+    }
+    .popup.show, .loading-container.show {
+      display: flex;
+    }
+    .popup img.logo {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      border: 3px solid var(--primary-color);
+    }
+    .popup h1 { font-size: 26px; }
+    .popup button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .loading-container {
+      background: var(--bg-color);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      overflow: auto;
+    }
+    .loading-bar {
+      width: 80%;
+      background-color: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 15px;
+      margin-top: 20px;
+    }
+    .loading-fill {
+      width: 0%;
+      height: 100%;
+      background-color: var(--primary-color);
+    }
+    .container {
+      padding: 20px;
+      background: var(--bg-color);
+      max-width: 600px;
+      margin: 0 auto;
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .logo-section {
+      text-align: center;
+    }
+    .logo-section img {
+      width: 120px;
+      border-radius: 12px;
+      border: 3px solid var(--primary-color);
+    }
+    .logo-section h1 { font-size: 28px; }
+    .payment-section {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+    }
+    .payment-section:hover {
+      box-shadow: 0 0 15px var(--primary-color);
+    }
+    .payment-method {
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .payment-method button {
+      padding: 5px 12px;
+      font-size: 12px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .qris-img {
+      display: block;
+      margin: 20px auto;
+      max-width: 160px;
+      cursor: pointer;
+      border-radius: 10px;
+      border: 2px solid var(--primary-color);
+      transition: all 0.3s ease;
+    }
+    .qris-img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+    .riwayat, .kirim-bukti {
+      margin-top: 30px;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .riwayat ul {
+      list-style: none;
+      padding: 0;
+    }
+    .riwayat li {
+      border-bottom: 1px solid #555;
+      padding: 8px 0;
+    }
+    @media (max-width: 480px) {
+      .popup h1, .logo-section h1 { font-size: 18px; }
+      .popup button, .payment-method button { font-size: 14px; padding: 8px 14px; }
+      .qris-img { max-width: 120px; }
+    }
+  </style>
+ </head>
+ <body>
+  <button class="toggle-mode" onclick="toggleMode()">Light/Dark</button> <button class="toggle-music" onclick="toggleMusic()">Play Musik</button>
+  <audio id="bgMusic" loop>
+   <source src="https://sf16-ies-music-va.tiktokcdn.com/obj/musically-maliva-obj/7306703616638388997.mp3" type="audio/mpeg">
+  </audio>
+  <div id="particles-js"></div>
+  <div class="popup show" id="welcomePopup">
+   <img src="https://files.catbox.moe/j2pz6m.jpg" alt="Logo Payment" class="logo">
+   <h1>PAYMENT VINZARA</h1>
+   <p>Silakan pilih metode pembayaran untuk membeli produk di vinzara</p><button onclick="startLoading()">𝗠𝗮𝘀𝘂𝗸</button>
+  </div>
+  <div class="loading-container" id="loadingScreen">
+   <h2 class="loading-text">Loading <span id="loadingPercent">0%</span></h2>
+   <div class="loading-bar">
+    <div class="loading-fill" id="loadingFill"></div>
+   </div>
+  </div>
+  <div class="container" id="mainContent">
+   <div class="logo-section">
+    <img src="https://files.catbox.moe/wiewn6.jpg" alt="Logo Payment">
+    <h1>PAYMENT VINZARA</h1>
+   </div>
+   <div class="payment-section">
+    <h2>Metode Pembayaran</h2>
+    <div class="payment-method">
+     Ovo: <strong id="ovoNumber">082111044472</strong> <button onclick="copyText('ovoNumber')">Salin</button>
+    </div>
+    <div class="payment-method">
+     GoPay: <strong id="gopayNumber">082111044472</strong> <button onclick="copyText('gopayNumber')">Salin</button>
+    </div>
+    <div class="payment-method">
+     Dana: <em>Belum tersedia</em> <button disabled style="opacity: 0.6; cursor: not-allowed;">Salin</button>
+    </div>
+    <h2>Bayar via QRIS</h2><img src="https://files.catbox.moe/wiewn6.jpg" alt="QRIS Payment" class="qris-img" onclick="window.open(this.src)">
+   </div>
+   <div class="riwayat">
+    <h2>Riwayat Transaksi</h2>
+    <ul>
+    </ul>
+   </div>
+   <div class="kirim-bukti">
+    <h2>Kirim Bukti Transfer</h2><input type="file" id="buktiInput" accept="image/*">
+    <br>
+    <br><button onclick="kirimBukti()">Kirim ke Owner (WA)</button>
+   </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    let musicPlaying = false;
+    function toggleMusic() {
+      const audio = document.getElementById("bgMusic");
+      if (audio.readyState >= 2) {
+        musicPlaying ? audio.pause() : audio.play();
+        musicPlaying = !musicPlaying;
+      } else {
+        alert("Musik belum siap diputar.");
+      }
+    }
+
+    function kirimBukti() {
+      const fileInput = document.getElementById("buktiInput");
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Silakan pilih gambar bukti transfer terlebih dahulu.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("File harus berupa gambar.");
+        return;
+      }
+      const waNumber = "6282111044472";
+      const pesan = encodeURIComponent("Halo kak, saya sudah transfer. Berikut bukti pembayarannya:");
+      const linkWA = `https://wa.me/${waNumber}?text=${pesan}`;
+      alert("Bukti berhasil dipilih. Silakan klik OK untuk mengirim via WhatsApp.");
+      window.open(linkWA, "_blank");
+    }
+
+    function startLoading() {
+      document.getElementById("welcomePopup").classList.remove("show");
+      document.getElementById("welcomePopup").style.display = "none";
+      const loading = document.getElementById("loadingScreen");
+      loading.style.display = "flex";
+      loading.classList.add("show");
+      let percent = 0;
+      const interval = setInterval(() => {
+        percent += 1;
+        document.getElementById("loadingPercent").textContent = percent + "%";
+        document.getElementById("loadingFill").style.width = percent + "%";
+        if (percent >= 100) {
+          clearInterval(interval);
+          loading.style.display = "none";
+          const main = document.getElementById("mainContent");
+          main.style.display = "flex";
+          main.classList.add("show");
+        }
+      }, 25);
+    }
+
+    function copyText(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Nomor berhasil disalin: " + text);
+        }).catch(() => {
+          alert("Gagal menyalin");
+        });
+      } else {
+        const tempInput = document.createElement("input");
+        document.body.appendChild(tempInput);
+        tempInput.value = text;
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Nomor berhasil disalin: " + text);
+      }
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("light-mode");
+      const mode = document.body.classList.contains("light-mode") ? "light" : "dark";
+      localStorage.setItem("site-theme", mode);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedMode = localStorage.getItem("site-theme");
+      if (savedMode === "light") {
+        document.body.classList.add("light-mode");
+      }
+    });
+
+    // Fallback if particles.js fails
+    setTimeout(() => {
+      if (typeof particlesJS === "undefined") {
+        document.getElementById("particles-js").style.display = "none";
+      } else {
+        particlesJS("particles-js", {
+          particles: {
+            number: { value: 60, density: { enable: true, value_area: 800 } },
+            color: { value: "#2196f3" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5 },
+            size: { value: 4, random: true },
+            line_linked: {
+              enable: true,
+              distance: 150,
+              color: "#2196f3",
+              opacity: 0.4,
+              width: 1
+            },
+            move: { enable: true, speed: 2, out_mode: "out" }
+          },
+          interactivity: {
+            events: {
+              onhover: { enable: true, mode: "repulse" },
+              onclick: { enable: true, mode: "push" }
+            },
+            modes: {
+              repulse: { distance: 100, duration: 0.4 },
+              push: { particles_nb: 4 }
+            }
+          },
+          retina_detect: true
+        });
+      }
+    }, 500);
+  </script>
+ </body>
+</html>
